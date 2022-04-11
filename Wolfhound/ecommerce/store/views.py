@@ -1,10 +1,36 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.db.models import F
+from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 import datetime
 import json
 
 from .models import *
+from .forms import UserRegisterForm
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, 'Successful Registration!')
+            return redirect('login')
+        else:
+            messages.error(request, 'Registration Error!')
+    else:
+        form = UserRegisterForm()
+
+    return render(request, 'store/register.html', {'form': form})
+
+
+def login(request):
+    context = {}
+    return render(request, 'store/login.html', context)
 
 
 def store(request):
