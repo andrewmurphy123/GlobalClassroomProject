@@ -39,6 +39,14 @@ class UserRegisterForm(forms.ModelForm):
             self.add_error("password_2", "Your passwords must match")
         return cleaned_data
 
+    def save(self, commit=True):
+        # Save the provided password in hashed format
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
+
 
 class UserAdminCreationForm(forms.ModelForm):
     """ Form for creating new users, includes all the required fields. """

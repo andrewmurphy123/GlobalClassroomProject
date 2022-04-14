@@ -17,10 +17,11 @@ def user_register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, 'Successful Registration!')
+            Customer.objects.create(user=user, organisation=None)
+            messages.success(request, 'User Registration Successful!')
             return redirect('store')
         else:
-            messages.error(request, 'Registration Error!')
+            messages.error(request, 'Error: Something Went Wrong.')
     else:
         form = UserRegisterForm()
 
