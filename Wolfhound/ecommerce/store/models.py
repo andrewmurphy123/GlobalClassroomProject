@@ -55,6 +55,8 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
         ordering = ['last_name', 'first_name']
 
     def get_full_name(self):
@@ -93,6 +95,8 @@ class Organisation(models.Model):
     name = models.CharField(verbose_name='Name', max_length=100, unique=True, null=False, blank=False)
 
     class Meta:
+        verbose_name = 'Organisation'
+        verbose_name_plural = 'Organisations'
         ordering = ['name']
 
     def __str__(self):
@@ -100,10 +104,12 @@ class Organisation(models.Model):
 
 
 class Customer(models.Model):
-    user = models.OneToOneField(User, verbose_name='User', on_delete=models.RESTRICT, editable=False, null=False, blank=False)
+    user = models.OneToOneField(User, verbose_name='User', on_delete=models.RESTRICT, null=False, blank=False)
     organisation = models.ForeignKey(Organisation, verbose_name='Organisation', on_delete=models.RESTRICT, null=True, blank=True)
 
     class Meta:
+        verbose_name = 'Customer'
+        verbose_name_plural = 'Customers'
         ordering = ['user']
 
     def __str__(self):
@@ -114,10 +120,13 @@ class Product(models.Model):
     price = models.DecimalField(verbose_name='Price', max_digits=6, decimal_places=2, null=False, default=0, validators=[MinValueValidator(0.00)])
     name = models.CharField(verbose_name='Name', max_length=100, null=False, blank=False)
     description = models.TextField(verbose_name='Description', null=True, blank=True)
-    image = models.ImageField(verbose_name='Image', null=True, blank=True)
-    availability = models.BooleanField(verbose_name='Availability')
+    availability = models.BooleanField(verbose_name='Availability', default=True)
+    image = models.ImageField(verbose_name='Image', upload_to='photos/%Y/%m/%d/', null=True, blank=True)
 
     class Meta:
+
+        verbose_name = 'Product'
+        verbose_name_plural = 'Products'
         ordering = ['name']
 
     @property
@@ -137,10 +146,44 @@ class Stock(models.Model):
     total_stock = models.IntegerField(verbose_name='In Stock', null=False, default=0, validators=[MinValueValidator(0)])
 
     class Meta:
+
+        verbose_name = 'Stock'
+        verbose_name_plural = 'Stock'
         ordering = ['product']
 
     def __str__(self):
         return self.product.name
+
+
+class ShippingAddress(models.Model):
+    address = models.CharField(max_length=200, null=False, blank=False)
+    city = models.CharField(max_length=50, null=True, blank=True)
+    county = models.CharField(max_length=50, null=True, blank=True)
+    eircode = models.CharField(max_length=8, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Shipping Address'
+        verbose_name_plural = 'Shipping Addresses'
+        ordering = ['eircode']
+
+    def __str__(self):
+        return self.address
+
+
+class BillingAddress(models.Model):
+    address = models.CharField(max_length=200, null=False, blank=False)
+    city = models.CharField(max_length=50, null=True, blank=True)
+    county = models.CharField(max_length=50, null=True, blank=True)
+    eircode = models.CharField(max_length=8, null=True, blank=True)
+
+    class Meta:
+
+        verbose_name = 'Billing Address'
+        verbose_name_plural = 'Billing Addresses'
+        ordering = ['eircode']
+
+    def __str__(self):
+        return self.address
 
 
 class Order(models.Model):
@@ -148,16 +191,19 @@ class Order(models.Model):
         ('pending', 'Pending'),
         ('awaiting_payment', 'Awaiting Payment'),
         ('awaiting_shipment', 'Awaiting Shipment'),
-        ('completed', 'Completed'),
         ('shipped', 'Shipped'),
     )
 
     customer = models.ForeignKey(Customer, verbose_name='Customer', editable=False, on_delete=models.SET_NULL, null=True, blank=True)
+    billing_address = models.ForeignKey(BillingAddress, verbose_name='Billing Address', editable=False, on_delete=models.SET_NULL, null=True, blank=True)
+    shipping_address = models.ForeignKey(ShippingAddress, verbose_name='Shipping Address', editable=False, on_delete=models.SET_NULL, null=True, blank=True)
     transaction_id = models.CharField(verbose_name='Transaction ID', editable=False, max_length=100, null=True, blank=True)
     order_status = models.CharField(verbose_name='Order Status', max_length=50, null=False, blank=False, choices=CHOICES)
     order_date = models.DateTimeField(verbose_name='Order Date', auto_now_add=True, editable=False)
 
     class Meta:
+        verbose_name = 'Order'
+        verbose_name_plural = 'Orders'
         ordering = ['-id']
 
     @property
@@ -183,6 +229,8 @@ class OrderItem(models.Model):
     date_added = models.DateTimeField(verbose_name='Date Added', auto_now_add=True, editable=False)
 
     class Meta:
+        verbose_name = 'Order Item'
+        verbose_name_plural = 'Order Items'
         ordering = ['order']
 
     @property
@@ -192,28 +240,3 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return str(self.id)
-
-
-class ShippingAddress(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=False)
-    address = models.CharField(max_length=200, null=False, blank=False)
-    city = models.CharField(max_length=50, null=True, blank=True)
-    county = models.CharField(max_length=50, null=True, blank=True)
-    eircode = models.CharField(max_length=8, null=True, blank=True)
-
-    class Meta:
-        ordering = ['order']
-
-    def __str__(self):
-        return self.address
-
-
-class CustomerAddresses(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=False)
-    shipping_address = models.ForeignKey(ShippingAddress, on_delete=models.SET_NULL, null=True, blank=False)
-
-    class Meta:
-        ordering = ['customer']
-
-    def __str__(self):
-        return self.shipping_address.address

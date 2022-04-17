@@ -23,7 +23,6 @@ class OrganisationAdmin(admin.ModelAdmin):
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    readonly_fields = ['user']
     fields = ['user', 'organisation']
     list_display = ['user', 'get_customer_email', 'organisation']
     search_fields = ['user__first_name', 'user__last_name', 'user__email', 'organisation__name']
@@ -44,8 +43,8 @@ class StockAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    readonly_fields = ['customer', 'order_date', 'transaction_id']
-    fields = ['customer', 'order_status', 'order_date', 'transaction_id']
+    readonly_fields = ['customer', 'billing_address', 'shipping_address', 'order_date', 'transaction_id']
+    fields = ['customer', 'billing_address', 'shipping_address', 'order_status', 'order_date', 'transaction_id']
     list_filter = ['order_status']
     list_display = ['id', 'get_customer_name', 'get_customer_email', 'order_status', 'order_date', 'transaction_id']
     search_fields = ['id', 'customer__user__last_name', 'customer__user__first_name', 'customer__user__email', 'transaction_id']
@@ -75,10 +74,6 @@ class ShippingAddressAdmin(admin.ModelAdmin):
     fields = ['order', 'address', 'city', 'county', 'eircode']
     list_display = ['order', 'address', 'city', 'county', 'eircode']
 
-
-@admin.register(CustomerAddresses)
-class CustomerAddressesAdmin(admin.ModelAdmin):
-    fields = ['customer', 'shipping_address']
 
 User = get_user_model()
 

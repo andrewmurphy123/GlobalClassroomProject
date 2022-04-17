@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.http import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse, HttpResponse
 from django.db.models import F
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -12,32 +12,38 @@ from .forms import UserRegisterForm, UserLoginForm
 
 
 def user_register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            Customer.objects.create(user=user, organisation=None)
-            messages.success(request, 'User Registration Successful!')
-            return redirect('store')
-        else:
-            messages.error(request, 'Error: Something Went Wrong.')
+    if request.user.is_authenticated:
+        return redirect('store')
     else:
-        form = UserRegisterForm()
+        if request.method == 'POST':
+            form = UserRegisterForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                Customer.objects.create(user=user, organisation=None)
+                messages.success(request, 'User Registration Successful!')
+                return redirect('store')
+            else:
+                messages.error(request, 'Error: Something Went Wrong.')
+        else:
+            form = UserRegisterForm()
 
-    return render(request, 'store/register.html', {'form': form})
+        return render(request, 'store/register.html', {'form': form})
 
 
 def user_login(request):
-    if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('store')
+    if request.user.is_authenticated:
+        return redirect('store')
     else:
-        form = UserLoginForm()
-    return render(request, 'store/login.html', {'form': form})
+        if request.method == 'POST':
+            form = UserLoginForm(data=request.POST)
+            if form.is_valid():
+                user = form.get_user()
+                login(request, user)
+                return redirect('store')
+        else:
+            form = UserLoginForm()
+        return render(request, 'store/login.html', {'form': form})
 
 
 def user_logout(request):
@@ -47,14 +53,15 @@ def user_logout(request):
 
 def store(request):
     if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
-        cart_items = order.get_cart_items
+        try:
+            customer = request.user.customer
+            order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
+            cart_items = order.get_cart_items
+        except ObjectDoesNotExist:
+            print("Error - Customer does not exist for this User Account.")
+            return HttpResponse('Error 403 - Forbidden', status=403)
     else:
-        items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
-        cart_items = order['get_cart_items']
+        return HttpResponse('Error 401 - Unauthorized', status=401)
 
     products = Product.objects.all()
     context = {'products': products, 'cart_items': cart_items}
@@ -63,14 +70,16 @@ def store(request):
 
 def cart(request):
     if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
-        cart_items = order.get_cart_items
+        try:
+            customer = request.user.customer
+            order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
+            items = order.orderitem_set.all()
+            cart_items = order.get_cart_items
+        except ObjectDoesNotExist:
+            print("Error - Customer does not exist for this User Account.")
+            return HttpResponse('Error 403 - Forbidden', status=403)
     else:
-        items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
-        cart_items = order['get_cart_items']
+        return HttpResponse('Error 401 - Unauthorized', status=401)
 
     context = {'items': items, 'order': order, 'cart_items': cart_items}
     return render(request, 'store/cart.html', context)
@@ -78,14 +87,16 @@ def cart(request):
 
 def checkout(request):
     if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
-        cart_items = order.get_cart_items
+        try:
+            customer = request.user.customer
+            order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
+            items = order.orderitem_set.all()
+            cart_items = order.get_cart_items
+        except ObjectDoesNotExist:
+            print("Error - Customer does not exist for this User Account.")
+            return HttpResponse('Error 403 - Forbidden', status=403)
     else:
-        items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
-        cart_items = order['get_cart_items']
+        return HttpResponse('Error 401 - Unauthorized', status=401)
 
     context = {'items': items, 'order': order, 'cart_items': cart_items}
     return render(request, 'store/checkout.html', context)
@@ -98,7 +109,7 @@ def update_item(request):
 
     customer = request.user.customer
     product = Product.objects.get(id=product_id)
-    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+    order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
     order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
 
     if action == 'add':
@@ -120,25 +131,28 @@ def process_order(request):
     transaction_id = datetime.datetime.now().timestamp()
 
     if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        total = float(data['form']['total'])
-        order.transaction_id = transaction_id
+        try:
+            customer = request.user.customer
+            order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
+            total = float(data['form']['total'])
+            order.transaction_id = transaction_id
 
-        if total == order.get_cart_total:
-            order.complete = True
+            if total == order.get_cart_total:
+                order.order_status = 'awaiting_payment'
 
-        order.save()
-
-        if order.shipping:
-            ShippingAddress.objects.create(
-                customer=customer,
-                order=order,
+            order.shipping_address = ShippingAddress.objects.create(
+                #customer=customer,
+                #order=order,
                 address=data['shipping']['address'],
                 city=data['shipping']['city'],
-                state=data['shipping']['state'],
-                zipcode=data['shipping']['zipcode'],
+                county=data['shipping']['county'],
+                eircode=data['shipping']['eircode'],
             )
+
+            order.save()
+        except ObjectDoesNotExist:
+            print("Customer does not exist for this User Account.")
     else:
         print('User Not Logged In')
+
     return JsonResponse('Payment Complete', safe=False)

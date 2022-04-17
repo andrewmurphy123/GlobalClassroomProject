@@ -20,16 +20,16 @@
                     <p>Shipping Information:</p>
                     <hr>
                     <div class="form-field">
-                        <input class="form-control" name="address" placeholder="Address.." type="text">
+                        <input class="form-control" name="address" placeholder="Address" type="text">
                     </div>
                     <div class="form-field">
-                        <input class="form-control" name="city" placeholder="City.." type="text">
+                        <input class="form-control" name="city" placeholder="City" type="text">
                     </div>
                     <div class="form-field">
-                        <input class="form-control" name="state" placeholder="State.." type="text">
+                        <input class="form-control" name="county" placeholder="County" type="text">
                     </div>
                     <div class="form-field">
-                        <input class="form-control" name="zipcode" placeholder="Index.." type="text">
+                        <input class="form-control" name="eircode" placeholder="Eircode" type="text">
                     </div>
                 </div>
                 <hr>
@@ -53,7 +53,7 @@
             <hr>
             {% for item in items %}
             <div class="cart-row">
-                <div style="flex:2"><img class="row-image" src="{{item.product.imageURL}}"></div>
+                <div style="flex:2"><img class="row-image" src="{{item.product.image_url}}"></div>
                 <div style="flex:2"><p>{{item.product.name}}</p></div>
                 <div style="flex:1"><p>${{item.product.price}}</p></div>
                 <div style="flex:1"><p>{{item.quantity}}</p></div>
@@ -69,10 +69,6 @@
 <script type="text/javascript">
     var shipping = '{{order.shipping}}'
     var total = '{{order.get_cart_total}}'
-
-    if (shipping == 'False') {
-        document.getElementById('shipping-info').innerHTML = ''
-    }
 
     if (user != 'AnonymousUser') {
         document.getElementById('user-info').innerHTML = ''
@@ -108,15 +104,15 @@
         var shippingInfo = {
             'address': null,
             'city': null,
-            'state': null,
-            'zipcode': null,
+            'county': null,
+            'eircode': null,
         }
 
         if (shipping != 'False') {
             shippingInfo.address = form.address.value
             shippingInfo.city = form.city.value
-            shippingInfo.state = form.state.value
-            shippingInfo.zipcode = form.zipcode.value
+            shippingInfo.county = form.county.value
+            shippingInfo.eircode = form.eircode.value
         }
 
         if (user == 'AnonymousUser') {
