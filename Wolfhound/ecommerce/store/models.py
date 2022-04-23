@@ -116,15 +116,34 @@ class Customer(models.Model):
         return f'{self.user.last_name} {self.user.first_name} — ({self.user.email})'
 
 
+class Size(models.Model):
+    CHOICES = (
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('unisex', 'Unisex'),
+    )
+
+    size = models.CharField(verbose_name='Size', max_length=10, unique=True, null=False, blank=False)
+    gender = models.CharField(verbose_name='Gender', max_length=10, default='unisex', choices=CHOICES)
+
+    class Meta:
+        verbose_name = 'Size'
+        verbose_name_plural = 'Sizes'
+
+    def __str__(self):
+        return f'{self.size} - {self.gender}'
+
+
 class Product(models.Model):
     price = models.DecimalField(verbose_name='Price', max_digits=6, decimal_places=2, null=False, default=0, validators=[MinValueValidator(0.00)])
     name = models.CharField(verbose_name='Name', max_length=100, null=False, blank=False)
     description = models.TextField(verbose_name='Description', null=True, blank=True)
+    sizes = models.ManyToManyField(Size, verbose_name='Sizes', null=True, blank=True)
+    organisation = models.ForeignKey(Organisation, verbose_name='Organisation', on_delete=models.CASCADE, null=True, blank=True)
     availability = models.BooleanField(verbose_name='Availability', default=True)
     image = models.ImageField(verbose_name='Image', upload_to='photos/%Y/%m/%d/', null=True, blank=True)
 
     class Meta:
-
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
         ordering = ['name']
@@ -139,20 +158,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class Stock(models.Model):
-    product = models.OneToOneField(Product, verbose_name='Product', on_delete=models.RESTRICT, null=False, blank=False)
-    total_stock = models.IntegerField(verbose_name='In Stock', null=False, default=0, validators=[MinValueValidator(0)])
-
-    class Meta:
-
-        verbose_name = 'Stock'
-        verbose_name_plural = 'Stock'
-        ordering = ['product']
-
-    def __str__(self):
-        return self.product.name
 
 
 class ShippingAddress(models.Model):

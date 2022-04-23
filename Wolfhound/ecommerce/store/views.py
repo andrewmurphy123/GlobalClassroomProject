@@ -52,20 +52,25 @@ def user_logout(request):
 
 
 def store(request):
-    if request.user.is_authenticated:
+    if not request.user.is_authenticated:
+        print("Error - Visitor does not have an access to E-Shop.")
+        return HttpResponse('Error 401 - Unauthorized', status=401)
+    else:
         try:
             customer = request.user.customer
-            order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
-            cart_items = order.get_cart_items
         except ObjectDoesNotExist:
             print("Error - Customer does not exist for this User Account.")
             return HttpResponse('Error 403 - Forbidden', status=403)
-    else:
-        return HttpResponse('Error 401 - Unauthorized', status=401)
 
-    products = Product.objects.all()
-    context = {'products': products, 'cart_items': cart_items}
-    return render(request, 'store/store.html', context)
+        if customer.organisation is None:
+            print("Error - Customer has not been assigned an Organisation.")
+            return HttpResponse('Error 403 - Forbidden', status=403)
+        else:
+            order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
+            products = Product.objects.filter(organisation=customer.organisation)
+            cart_items = order.get_cart_items
+            context = {'products': products, 'cart_items': cart_items}
+            return render(request, 'store/store.html', context)
 
 
 def cart(request):

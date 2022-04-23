@@ -32,13 +32,17 @@ class CustomerAdmin(admin.ModelAdmin):
         return obj.user.email
 
 
-admin.site.register(Product)
+@admin.register(Size)
+class SizeAdmin(admin.ModelAdmin):
+    fields = ['size', 'gender']
+    list_display = ['size', 'gender']
+    search_fields = ['size', 'gender']
 
 
-@admin.register(Stock)
-class StockAdmin(admin.ModelAdmin):
-    list_display = ['product', 'total_stock']
-    search_fields = ['product__name']
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    fields = ['price', 'name', 'description', 'sizes', 'organisation', 'availability', 'image']
+    filter_horizontal = ('sizes',)
 
 
 @admin.register(Order)
