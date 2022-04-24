@@ -67,7 +67,14 @@ def store(request):
             return HttpResponse('Error 403 - Forbidden', status=403)
         else:
             order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
-            products = Product.objects.filter(organisation=customer.organisation)
+
+            if request.user.is_staff or request.user.is_admin:
+                # management can see all products
+                products = Product.objects.all()
+            else:
+                # customers can see only specific products
+                products = Product.objects.filter(organisation=customer.organisation)
+
             cart_items = order.get_cart_items
             context = {'products': products, 'cart_items': cart_items}
             return render(request, 'store/store.html', context)

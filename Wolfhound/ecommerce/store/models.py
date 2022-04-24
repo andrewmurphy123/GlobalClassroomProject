@@ -123,12 +123,14 @@ class Size(models.Model):
         ('unisex', 'Unisex'),
     )
 
-    size = models.CharField(verbose_name='Size', max_length=10, unique=True, null=False, blank=False)
+    size = models.CharField(verbose_name='Size', max_length=10, null=False, blank=False)
     gender = models.CharField(verbose_name='Gender', max_length=10, default='unisex', choices=CHOICES)
 
     class Meta:
         verbose_name = 'Size'
         verbose_name_plural = 'Sizes'
+        unique_together = ['size', 'gender']
+        ordering = ['gender']
 
     def __str__(self):
         return f'{self.size} - {self.gender}'
@@ -146,7 +148,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
-        ordering = ['name']
+        ordering = ['organisation', 'name']
 
     @property
     def image_url(self):
@@ -200,8 +202,8 @@ class Order(models.Model):
     )
 
     customer = models.ForeignKey(Customer, verbose_name='Customer', editable=False, on_delete=models.SET_NULL, null=True, blank=True)
-    billing_address = models.ForeignKey(BillingAddress, verbose_name='Billing Address', editable=False, on_delete=models.SET_NULL, null=True, blank=True)
-    shipping_address = models.ForeignKey(ShippingAddress, verbose_name='Shipping Address', editable=False, on_delete=models.SET_NULL, null=True, blank=True)
+    billing_address = models.OneToOneField(BillingAddress, verbose_name='Billing Address', editable=False, on_delete=models.SET_NULL, null=True, blank=True)
+    shipping_address = models.OneToOneField(ShippingAddress, verbose_name='Shipping Address', editable=False, on_delete=models.SET_NULL, null=True, blank=True)
     transaction_id = models.CharField(verbose_name='Transaction ID', editable=False, max_length=100, null=True, blank=True)
     order_status = models.CharField(verbose_name='Order Status', max_length=50, null=False, blank=False, choices=CHOICES)
     order_date = models.DateTimeField(verbose_name='Order Date', auto_now_add=True, editable=False)

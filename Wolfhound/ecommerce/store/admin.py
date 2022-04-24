@@ -35,13 +35,16 @@ class CustomerAdmin(admin.ModelAdmin):
 @admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
     fields = ['size', 'gender']
+    list_filter = ['gender']
     list_display = ['size', 'gender']
     search_fields = ['size', 'gender']
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    fields = ['price', 'name', 'description', 'sizes', 'organisation', 'availability', 'image']
+    fields = ['name', 'price', 'organisation', 'description', 'sizes', 'availability', 'image']
+    list_filter = ['organisation', 'availability']
+    list_display = ['name', 'price', 'organisation', 'availability', 'image']
     filter_horizontal = ('sizes',)
 
 
@@ -75,8 +78,14 @@ class OrderItemAdmin(admin.ModelAdmin):
 
 @admin.register(ShippingAddress)
 class ShippingAddressAdmin(admin.ModelAdmin):
-    fields = ['order', 'address', 'city', 'county', 'eircode']
-    list_display = ['order', 'address', 'city', 'county', 'eircode']
+    fields = ['address', 'city', 'county', 'eircode']
+    list_display = ['address', 'city', 'county', 'eircode']
+
+
+@admin.register(BillingAddress)
+class ShippingAddressAdmin(admin.ModelAdmin):
+    fields = ['address', 'city', 'county', 'eircode']
+    list_display = ['address', 'city', 'county', 'eircode']
 
 
 User = get_user_model()
@@ -91,8 +100,8 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ['email', 'first_name', 'last_name', 'admin']
-    list_filter = ['admin']
+    list_display = ['email', 'first_name', 'last_name', 'admin', 'staff']
+    list_filter = ['admin', 'staff']
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal Information', {'fields': ('first_name', 'last_name',)}),
@@ -106,6 +115,6 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'password', 'password_2')}
          ),
     )
-    search_fields = ['email']
+    search_fields = ['email', 'first_name', 'last_name']
     ordering = ['email']
     filter_horizontal = ()

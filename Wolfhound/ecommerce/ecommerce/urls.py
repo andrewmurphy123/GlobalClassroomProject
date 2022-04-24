@@ -20,9 +20,14 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, ),
     path('', include('store.urls'))
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+admin.site.site_header = "Wolfhound and Elk"
+admin.site.site_title = "Wolfhound and Elk"
+admin.site.index_title = "Store Management Dashboard"
