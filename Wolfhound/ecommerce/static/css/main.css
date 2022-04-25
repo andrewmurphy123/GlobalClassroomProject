@@ -1,11 +1,3 @@
-body{
-	background-color: hsl(0, 0%, 98%);
-}
-
-h1,h2,h3,h4,h5,h6{
-	color:hsl(0, 0%, 30%);
-}
-
 .box-element{
 	box-shadow:hsl(0, 0%, 80%) 0 0 16px;
 	background-color: #fff;
@@ -23,10 +15,6 @@ h1,h2,h3,h4,h5,h6{
 
 .product{
 	border-radius: 0 0 4px 4px;
-}
-
-.bg-dark{
-	background-color: #4f868c!important;
 }
 
 #cart-icon{

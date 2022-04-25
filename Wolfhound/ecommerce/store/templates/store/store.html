@@ -1,20 +1,27 @@
 {% extends 'store/main.html' %}
 {% load static %}
 {% block content %}
-<div class="row mt-5">
-    {% for product in products %}
-    <div class="col-lg-4">
-        <img class="thumbnail" src="{{product.image_url}}">
-        <div class="box-element product">
-            <h6><strong>{{product.name}}</strong></h6>
-            <hr>
-
-            <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
-            <a class="btn btn-outline-success" href="#">View</a>
-            <h4 style="display: inline-block; float: right"><strong>€{{product.price|floatformat:2}}</strong></h4>
-
-        </div>
+<div class="container">
+    <div class="row my-5">
+        <h1 style="letter-spacing: 2.5px;">Products</h1>
     </div>
-    {% endfor %}
+</div>
+    <div class="row">
+        {% for product in products %}
+        {% if product.availability == True %}
+        <div class="col-md-3 mb-5">
+        <img class="thumbnail rounded" src="{{product.image_url}}" style="min-height:250px">
+        <div class="box-element product text-center">
+            <h4 class="text-center">{{product.name}}</h4>
+            <h6 class="text-center text-muted">{{product.organisation}}</h6>
+            <hr>
+            <div class="col pb-3">
+                <h4><strong>€{{product.price|floatformat:2}}</strong></h4>
+                <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary rounded add-btn update-cart">View Details</button>
+            </div>
+        </div>
+        </div>
+        {% endif %}
+        {% endfor %}
 </div>
 {% endblock content %}
