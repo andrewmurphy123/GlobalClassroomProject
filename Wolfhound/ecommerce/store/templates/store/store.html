@@ -2,26 +2,28 @@
 {% load static %}
 {% block content %}
 <div class="container">
-    <div class="row my-5">
+    <div class="row my-5 justify-content-center">
         <h1 style="letter-spacing: 2.5px;">Products</h1>
     </div>
 </div>
-    <div class="row">
+    <div class="row mx-auto">
         {% for product in products %}
         {% if product.availability == True %}
-        <div class="col-md-3 mb-5">
-        <img class="thumbnail rounded" src="{{product.image_url}}" style="min-height:250px">
-        <div class="box-element product text-center">
-            <h4 class="text-center">{{product.name}}</h4>
-            <h6 class="text-center text-muted">{{product.organisation}}</h6>
-            <hr>
-            <div class="col pb-3">
-                <h4><strong>€{{product.price|floatformat:2}}</strong></h4>
-                <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary rounded add-btn update-cart">View Details</button>
+        <div class="col-lg-3 col-sm-12 mb-5">
+            <div class="card shadow rounded">
+                <img src="{{product.image_url}}" class="card-img-top" style="height:16rem">
+                <div class="card-body">
+                       <h4 class="text-center">{{product.name}}</h4>
+                       <h6 class="text-center text-muted">{{product.organisation}}</h6>
+                       <hr>
+                       <div class="col text-center pb-3">
+                            <h4><strong>€{{product.price|floatformat:2}}</strong></h4>
+                            <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary rounded add-btn update-cart">View Details</button>
+                       </div>
+                </div>
             </div>
-        </div>
         </div>
         {% endif %}
         {% endfor %}
-</div>
+    </div>
 {% endblock content %}
