@@ -19,7 +19,7 @@
                         <input class="form-control" name="county" placeholder="County" type="text" maxlength="50" required>
                     </div>
                     <div class="form-field">
-                        <input class="form-control" name="eircode" placeholder="Eircode" maxlength="8" required type="text">
+                        <input class="form-control" name="eircode" placeholder="Eircode" type="text" maxlength="8" required>
                     </div>
                 </div>
                 <hr>
@@ -27,16 +27,16 @@
                     <h4 class="pl-2 px-2" style="letter-spacing: 0.5px;">Billing Information</h4>
                     <hr>
                     <div class="form-field">
-                        <input class="form-control" name="address" placeholder="Address" type="text">
+                        <input class="form-control" name="billing_address" placeholder="Address" type="text">
                     </div>
                     <div class="form-field">
-                        <input class="form-control" name="city" placeholder="City" type="text">
+                        <input class="form-control" name="billing_city" placeholder="City" type="text">
                     </div>
                     <div class="form-field">
-                        <input class="form-control" name="county" placeholder="County" type="text">
+                        <input class="form-control" name="billing_county" placeholder="County" type="text">
                     </div>
                     <div class="form-field">
-                        <input class="form-control" name="eircode" placeholder="Eircode" type="text">
+                        <input class="form-control" name="billing_eircode" placeholder="Eircode" type="text">
                     </div>
                 </div>
                 <hr>
@@ -74,19 +74,9 @@
 </div>
 
 <script type="text/javascript">
-    var shipping = '{{order.shipping}}'
     var total = '{{order.get_cart_total}}'
-
-    if (user != 'AnonymousUser') {
-        document.getElementById('user-info').innerHTML = ''
-    }
-
-    if (shipping == 'False' && user != 'AnonymousUser') {
-        document.getElementById('form-wrapper').classList.add('hidden')
-        document.getElementById('payment-info').classList.remove('hidden')
-    }
-
     var form = document.getElementById('form')
+
     csrftoken = form.getElementsByTagName("input")[0].value
 
     form.addEventListener('submit', function(e) {
@@ -115,17 +105,22 @@
             'eircode': null,
         }
 
-        if (shipping != 'False') {
-            shippingInfo.address = form.address.value
-            shippingInfo.city = form.city.value
-            shippingInfo.county = form.county.value
-            shippingInfo.eircode = form.eircode.value
+        var billingInfo = {
+            'address': null,
+            'city': null,
+            'county': null,
+            'eircode': null,
         }
 
-        if (user == 'AnonymousUser') {
-            userFormData.name = form.name.value
-            userFormData.email = form.email.value
-        }
+        shippingInfo.address = form.address.value
+        shippingInfo.city = form.city.value
+        shippingInfo.county = form.county.value
+        shippingInfo.eircode = form.eircode.value
+
+        billingInfo.address = form.billing_address.value
+        billingInfo.city = form.billing_city.value
+        billingInfo.county = form.billing_county.value
+        billingInfo.eircode = form.billing_eircode.value
 
         var url = '/process_order/'
 
@@ -135,7 +130,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken,
             },
-            body: JSON.stringify({'form': userFormData, 'shipping': shippingInfo})
+            body: JSON.stringify({'form': userFormData, 'billing': billingInfo, 'shipping': shippingInfo})
         })
 
         .then((response) => response.json())
