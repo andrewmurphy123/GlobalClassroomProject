@@ -1,3 +1,7 @@
+.btn-green {
+    background-color: #7CB06D
+}
+
 .box-element{
 	box-shadow:hsl(0, 0%, 80%) 0 0 16px;
 	background-color: #fff;
@@ -43,7 +47,7 @@
 }
 
 .row-image{
-	width: 100px;
+	width: 4rem;
 }
 
 .form-field{

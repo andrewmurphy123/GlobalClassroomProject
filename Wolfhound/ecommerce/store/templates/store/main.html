@@ -36,10 +36,10 @@
         <div class="form-inline my-2 my-lg-0">
             {% if user.is_authenticated %}
             <span class="nav-item mr-4">Hello, {{ request.user.first_name }}</span>
-            <a href="{% url 'cart' %}" class="btn rounded mr-2" style="background-color: #7CB06D"><i class="fa-solid fa-cart-shopping"></i></a>
-            <a href="{% url 'logout' %}" class="btn rounded" style="background-color: #7CB06D">Logout</a>
+            <a href="{% url 'cart' %}" class="btn btn-green rounded mr-2"><i class="fa-solid fa-cart-shopping"></i></a>
+            <a href="{% url 'logout' %}" class="btn btn-green rounded">Logout</a>
             {% else %}
-            <a href="{% url 'login' %}" class="btn rounded" style="background-color: #7CB06D">Login</a>
+            <a href="{% url 'login' %}" class="btn btn-green rounded">Login</a>
             {% endif %}
         </div>
 
