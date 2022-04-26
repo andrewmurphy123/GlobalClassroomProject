@@ -6,34 +6,41 @@
         <div class="box-element" id="form-wrapper">
             <form id="form">
                 {% csrf_token %}
-                <div id="user-info">
-                    <div class="form-field">
-                        <input class="form-control" name="name" placeholder="Name.." required type="text">
-                    </div>
-                    <div class="form-field">
-                        <input class="form-control" name="email" placeholder="Email.." required type="email">
-                    </div>
-                </div>
-
                 <div id="shipping-info">
+                    <h4 class="pl-2 pt-2" style="letter-spacing: 0.5px;">Shipping Information</h4>
                     <hr>
-                    <p>Shipping Information:</p>
-                    <hr>
                     <div class="form-field">
-                        <input class="form-control" name="address" placeholder="Address" type="text">
+                        <input class="form-control" name="address" placeholder="Address" type="text" maxlength="200" required>
                     </div>
                     <div class="form-field">
-                        <input class="form-control" name="city" placeholder="City" type="text">
+                        <input class="form-control" name="city" placeholder="City" type="text" maxlength="50" required>
                     </div>
                     <div class="form-field">
-                        <input class="form-control" name="county" placeholder="County" type="text">
+                        <input class="form-control" name="county" placeholder="County" type="text" maxlength="50" required>
                     </div>
                     <div class="form-field">
-                        <input class="form-control" name="eircode" placeholder="Eircode" type="text">
+                        <input class="form-control" name="eircode" placeholder="Eircode" type="text" maxlength="8" required>
                     </div>
                 </div>
                 <hr>
-                <input class="btn btn-success btn-block" id="form-button" type="submit" value="Continue">
+                <div id="billing-info">
+                    <h4 class="pl-2 px-2" style="letter-spacing: 0.5px;">Billing Information</h4>
+                    <hr>
+                    <div class="form-field">
+                        <input class="form-control" name="billing_address" placeholder="Address" type="text">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" name="billing_city" placeholder="City" type="text">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" name="billing_county" placeholder="County" type="text">
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" name="billing_eircode" placeholder="Eircode" type="text">
+                    </div>
+                </div>
+                <hr>
+                <button type="submit" class="btn btn-green btn-block rounded" id="form-button">Continue</i></button>
             </form>
         </div>
 
@@ -47,7 +54,7 @@
 
     <div class="col-lg-6">
         <div class="box-element">
-            <a class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
+            <a class="btn btn-outline-dark rounded m-2" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
             <hr>
             <h3>Order Summary</h3>
             <hr>
@@ -67,19 +74,9 @@
 </div>
 
 <script type="text/javascript">
-    var shipping = '{{order.shipping}}'
     var total = '{{order.get_cart_total}}'
-
-    if (user != 'AnonymousUser') {
-        document.getElementById('user-info').innerHTML = ''
-    }
-
-    if (shipping == 'False' && user != 'AnonymousUser') {
-        document.getElementById('form-wrapper').classList.add('hidden')
-        document.getElementById('payment-info').classList.remove('hidden')
-    }
-
     var form = document.getElementById('form')
+
     csrftoken = form.getElementsByTagName("input")[0].value
 
     form.addEventListener('submit', function(e) {
@@ -108,17 +105,22 @@
             'eircode': null,
         }
 
-        if (shipping != 'False') {
-            shippingInfo.address = form.address.value
-            shippingInfo.city = form.city.value
-            shippingInfo.county = form.county.value
-            shippingInfo.eircode = form.eircode.value
+        var billingInfo = {
+            'address': null,
+            'city': null,
+            'county': null,
+            'eircode': null,
         }
 
-        if (user == 'AnonymousUser') {
-            userFormData.name = form.name.value
-            userFormData.email = form.email.value
-        }
+        shippingInfo.address = form.address.value
+        shippingInfo.city = form.city.value
+        shippingInfo.county = form.county.value
+        shippingInfo.eircode = form.eircode.value
+
+        billingInfo.address = form.billing_address.value
+        billingInfo.city = form.billing_city.value
+        billingInfo.county = form.billing_county.value
+        billingInfo.eircode = form.billing_eircode.value
 
         var url = '/process_order/'
 
@@ -128,7 +130,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken,
             },
-            body: JSON.stringify({'form': userFormData, 'shipping': shippingInfo})
+            body: JSON.stringify({'form': userFormData, 'billing': billingInfo, 'shipping': shippingInfo})
         })
 
         .then((response) => response.json())

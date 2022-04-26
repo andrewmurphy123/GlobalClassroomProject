@@ -50,20 +50,21 @@
     </div>
 </nav>
 
-<div id="notfound">
-    <div class="notfound">
-        <div class="notfound-404">
-            <h1>Oops!</h1>
-            <h2>404 - The Page can't be found</h2>
-        </div>
-        <a href="https://wolfhoundandelk.com/">Go TO Homepage</a>
-    </div>
-</div>
+
 <div class="container"> 
     {% if messages %}
         {% for message in messages %}
             {% if message.tags == 'error' %}
                 <div class="alert alert-danger" role="alert">{{ message }}</div>
+                <div id="notfound">
+                    <div class="notfound">
+                        <div class="notfound-404">
+                            <h1>Oops!</h1>
+                            <h2>404 - The Page can't be found</h2>
+                        </div>
+                        <a href="https://wolfhoundandelk.com/">Go TO Homepage</a>
+                    </div>
+                </div>
             {% else %}
                 <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
             {% endif %}

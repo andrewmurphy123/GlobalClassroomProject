@@ -53,8 +53,7 @@ def user_logout(request):
 
 def store(request):
     if not request.user.is_authenticated:
-        print("Error - Visitor does not have an access to E-Shop.")
-        return HttpResponse('Error 401 - Unauthorized', status=401)
+        return redirect('login')
     else:
         try:
             customer = request.user.customer
@@ -81,37 +80,39 @@ def store(request):
 
 
 def cart(request):
-    if request.user.is_authenticated:
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
         try:
             customer = request.user.customer
-            order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
-            items = order.orderitem_set.all()
-            cart_items = order.get_cart_items
         except ObjectDoesNotExist:
             print("Error - Customer does not exist for this User Account.")
             return HttpResponse('Error 403 - Forbidden', status=403)
-    else:
-        return HttpResponse('Error 401 - Unauthorized', status=401)
 
-    context = {'items': items, 'order': order, 'cart_items': cart_items}
-    return render(request, 'store/cart.html', context)
+        order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
+        items = order.orderitem_set.all()
+        cart_items = order.get_cart_items
+
+        context = {'items': items, 'order': order, 'cart_items': cart_items}
+        return render(request, 'store/cart.html', context)
 
 
 def checkout(request):
-    if request.user.is_authenticated:
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
         try:
             customer = request.user.customer
-            order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
-            items = order.orderitem_set.all()
-            cart_items = order.get_cart_items
         except ObjectDoesNotExist:
             print("Error - Customer does not exist for this User Account.")
             return HttpResponse('Error 403 - Forbidden', status=403)
-    else:
-        return HttpResponse('Error 401 - Unauthorized', status=401)
 
-    context = {'items': items, 'order': order, 'cart_items': cart_items}
-    return render(request, 'store/checkout.html', context)
+        order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
+        items = order.orderitem_set.all()
+        cart_items = order.get_cart_items
+
+        context = {'items': items, 'order': order, 'cart_items': cart_items}
+        return render(request, 'store/checkout.html', context)
 
 
 def update_item(request):
@@ -128,6 +129,8 @@ def update_item(request):
         order_item.quantity = F('quantity') + 1  # class F is used to avoid race condition in DB
     elif action == 'remove':
         order_item.quantity = F('quantity') - 1  # class F is used to avoid race condition in DB
+    elif action == 'delete':
+        order_item.quantity = 0
 
     order_item.save()
     order_item.refresh_from_db()
@@ -153,12 +156,17 @@ def process_order(request):
                 order.order_status = 'awaiting_payment'
 
             order.shipping_address = ShippingAddress.objects.create(
-                #customer=customer,
-                #order=order,
                 address=data['shipping']['address'],
                 city=data['shipping']['city'],
                 county=data['shipping']['county'],
                 eircode=data['shipping']['eircode'],
+            )
+
+            order.billing_address = BillingAddress.objects.create(
+                address=data['billing']['address'],
+                city=data['billing']['city'],
+                county=data['billing']['county'],
+                eircode=data['billing']['eircode'],
             )
 
             order.save()
