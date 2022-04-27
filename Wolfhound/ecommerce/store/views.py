@@ -53,7 +53,7 @@ def user_logout(request):
 
 def store(request):
     if not request.user.is_authenticated:
-        #return redirect('login')
+        # return redirect('login')
         return render(request, 'store/error.html')
         # raise PermissionDenied
     else:
@@ -79,6 +79,31 @@ def store(request):
             cart_items = order.get_cart_items
             context = {'products': products, 'cart_items': cart_items}
             return render(request, 'store/store.html', context)
+
+
+def get_product(request, product_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        try:
+            product = Product.objects.get(pk=product_id)
+        except ObjectDoesNotExist:
+            print("Error - Page Not Found.")
+            return HttpResponse('Error 404 - Page Not Found', status=404)
+
+        try:
+            customer = request.user.customer
+        except ObjectDoesNotExist:
+            print("Error - Customer does not exist for this User Account.")
+            return HttpResponse('Error 403 - Forbidden', status=403)
+
+        if customer.organisation != product.organisation:
+            if not request.user.is_admin or not request.user.is_staff:
+                print("Error - You do not have access to this Product.")
+                return HttpResponse('Error 403 - Forbidden', status=403)
+
+        context = {'product': product}
+        return render(request, 'store/product.html', context)
 
 
 def cart(request):

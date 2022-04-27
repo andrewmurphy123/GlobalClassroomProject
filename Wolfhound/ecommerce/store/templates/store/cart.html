@@ -40,7 +40,7 @@
             {% for item in items %}
             <div class="cart-row text-center">
                 <div style="flex:1"><img class="row-image" src="{{item.product.image_url}}"></div>
-                <div style="flex:2">{{item.product.name}}</div>
+                <div style="flex:2"><a href="{% url 'product' item.product.pk %}">{{item.product.name}}</a></div>
                 <div style="flex:1">€{{item.product.price|floatformat:2}}</div>
                 <div style="flex:1">
                     <p class="quantity">{{item.quantity}}</p>

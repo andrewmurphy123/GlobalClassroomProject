@@ -18,7 +18,10 @@
                        <hr>
                        <div class="col pb-3">
                             <h4><strong>€{{product.price|floatformat:2}}</strong></h4>
+                            <a class="btn btn-outline-secondary rounded add-btn update-cart" href="{% url 'product' product.pk %}" role="button">View Details</a>
+                            <!--
                             <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary rounded add-btn update-cart">View Details</button>
+                            -->
                        </div>
                 </div>
             </div>
