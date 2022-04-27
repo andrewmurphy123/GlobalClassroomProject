@@ -1,8 +1,14 @@
-{% extends 'store/main.html' %}
+{% extends 'base.html' %}
+
+{% block heading %}
+    <div class="container">
+        <div class="row my-5 justify-content-center">
+            <h1 style="letter-spacing: 2.5px;">Login</h1>
+        </div>
+    </div>
+{% endblock %}
 
 {% block content %}
-<h3>Login</h3>
-
 <form method="POST" action="">
     {% csrf_token %}
     {{form.as_p}}

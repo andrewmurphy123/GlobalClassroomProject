@@ -1,3 +1,8 @@
+nav, footer {
+    color: #969696;
+    background-color: #1D1B26;
+}
+
 .btn-green {
     background-color: #7CB06D;
     transition:.1s;
@@ -26,12 +31,6 @@
 	border-radius: 0 0 4px 4px;
 }
 
-#cart-icon{
-	width:25px;
-	display: inline-block;
-	margin-left: 15px;
-}
-
 #cart-total{
 	display: block;
 	text-align: center;
@@ -56,9 +55,11 @@
 }
 
 .form-field{
-	width:250px;
+	width: 250px;
+	/*
 	display: inline-block;
 	padding: 5px;
+	*/
 }
 
 .cart-row{
@@ -74,8 +75,6 @@
 	display: inline-block;
 	font-weight: 700;
 	padding-right:10px;
-
-
 }
 
 .chg-quantity{
@@ -108,7 +107,7 @@
 
 #notfound {
 	position: relative;
-	height: 100vh;
+	height: 80vh;
   }
   
   #notfound .notfound {

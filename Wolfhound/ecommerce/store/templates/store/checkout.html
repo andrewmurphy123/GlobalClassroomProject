@@ -1,5 +1,6 @@
-{% extends 'store/main.html' %}
+{% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
 <div class="row mt-5">
     <div class="col-lg-6">
@@ -9,34 +10,42 @@
                 <div id="shipping-info">
                     <h4 class="pl-2 pt-2" style="letter-spacing: 0.5px;">Shipping Information</h4>
                     <hr>
-                    <div class="form-field">
-                        <input class="form-control" name="address" placeholder="Address" type="text" maxlength="200" required>
+                    <div class="form-row">
+                        <div class="col form-field">
+                            <input class="form-control" name="address" placeholder="Address" type="text" maxlength="200" required>
+                        </div>
+                        <div class="col form-field">
+                            <input class="form-control" name="city" placeholder="City" type="text" maxlength="50" required>
+                        </div>
                     </div>
-                    <div class="form-field">
-                        <input class="form-control" name="city" placeholder="City" type="text" maxlength="50" required>
-                    </div>
-                    <div class="form-field">
-                        <input class="form-control" name="county" placeholder="County" type="text" maxlength="50" required>
-                    </div>
-                    <div class="form-field">
-                        <input class="form-control" name="eircode" placeholder="Eircode" type="text" maxlength="8" required>
+                    <div class="form-row mt-2">
+                        <div class="col form-field">
+                            <input class="form-control" name="county" placeholder="County" type="text" maxlength="50" required>
+                        </div>
+                        <div class="col form-field">
+                            <input class="form-control" name="eircode" placeholder="Eircode" type="text" maxlength="8" required>
+                        </div>
                     </div>
                 </div>
                 <hr>
                 <div id="billing-info">
                     <h4 class="pl-2 px-2" style="letter-spacing: 0.5px;">Billing Information</h4>
                     <hr>
-                    <div class="form-field">
-                        <input class="form-control" name="billing_address" placeholder="Address" type="text">
+                    <div class="form-row">
+                        <div class="col form-field">
+                            <input class="form-control" name="billing_address" placeholder="Address" type="text">
+                        </div>
+                        <div class="col form-field">
+                            <input class="form-control" name="billing_city" placeholder="City" type="text">
+                        </div>
                     </div>
-                    <div class="form-field">
-                        <input class="form-control" name="billing_city" placeholder="City" type="text">
-                    </div>
-                    <div class="form-field">
-                        <input class="form-control" name="billing_county" placeholder="County" type="text">
-                    </div>
-                    <div class="form-field">
-                        <input class="form-control" name="billing_eircode" placeholder="Eircode" type="text">
+                    <div class="form-row pt-2">
+                        <div class="col form-field">
+                            <input class="form-control" name="billing_county" placeholder="County" type="text">
+                        </div>
+                        <div class="col form-field">
+                            <input class="form-control" name="billing_eircode" placeholder="Eircode" type="text">
+                        </div>
                     </div>
                 </div>
                 <hr>
@@ -52,11 +61,11 @@
 
     </div>
 
-    <div class="col-lg-6">
+    <div class="col-lg-6 mb-5">
         <div class="box-element">
             <a class="btn btn-outline-dark rounded m-2" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
             <hr>
-            <h3>Order Summary</h3>
+            <h4 class="pl-2 px-2" style="letter-spacing: 0.5px;">Order Summary</h4>
             <hr>
             {% for item in items %}
             <div class="cart-row">
@@ -140,7 +149,5 @@
             window.location.href = "{% url 'store' %}"
         })
     }
-
 </script>
-
 {% endblock content %}

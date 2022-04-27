@@ -1,11 +1,19 @@
-{% extends 'store/main.html' %}
+{% extends 'base.html' %}
 {% load static %}
-{% block content %}
-<div class="container">
-    <div class="row my-5 justify-content-center">
-        <h1 style="letter-spacing: 2.5px;">Products</h1>
+
+{% block title %}
+    {{ title }} - {{ block.super }}
+{% endblock %}
+
+{% block heading %}
+    <div class="container">
+        <div class="row my-5 justify-content-center">
+            <h1 style="letter-spacing: 2.5px;">{{ title }}</h1>
+        </div>
     </div>
-</div>
+{% endblock %}
+
+{% block content %}
     <div class="row mx-auto">
         {% for product in products %}
         {% if product.availability == True %}

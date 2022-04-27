@@ -1,11 +1,19 @@
-{% extends 'store/main.html' %}
+{% extends 'base.html' %}
 {% load static %}
-{% block content %}
+
+{% block title %}
+    {{ title }} - {{ block.super }}
+{% endblock %}
+
+{% block heading %}
 <div class="container">
     <div class="row my-5 justify-content-center">
         <h1 style="letter-spacing: 2.5px;">My Shopping Cart</h1>
     </div>
 </div>
+{% endblock %}
+
+{% block content %}
 <div class="row mt-5">
 	<div class="col-lg-12">
 		<div class="box-element">

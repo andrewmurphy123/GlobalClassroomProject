@@ -53,19 +53,15 @@ def user_logout(request):
 
 def store(request):
     if not request.user.is_authenticated:
-        # return redirect('login')
-        return render(request, 'store/error.html')
-        # raise PermissionDenied
+        return redirect('login')
     else:
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            print("Error - Customer does not exist for this User Account.")
-            return HttpResponse('Error 403 - Forbidden', status=403)
+            return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
 
         if customer.organisation is None:
-            print("Error - Customer has not been assigned an Organisation.")
-            return HttpResponse('Error 403 - Forbidden', status=403)
+            return render(request, 'store/error.html', {'error_code': 403, 'error_message': 'Access Denied.'})
         else:
             order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
 
@@ -77,7 +73,7 @@ def store(request):
                 products = Product.objects.filter(organisation=customer.organisation)
 
             cart_items = order.get_cart_items
-            context = {'products': products, 'cart_items': cart_items}
+            context = {'products': products, 'cart_items': cart_items, 'title': 'Products'}
             return render(request, 'store/store.html', context)
 
 
@@ -88,19 +84,18 @@ def get_product(request, product_id):
         try:
             product = Product.objects.get(pk=product_id)
         except ObjectDoesNotExist:
-            print("Error - Page Not Found.")
-            return HttpResponse('Error 404 - Page Not Found', status=404)
+            return render(request, 'store/error.html', {
+                'error_code': 404, 'error_message': 'Product Not Found.'})
 
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            print("Error - Customer does not exist for this User Account.")
-            return HttpResponse('Error 403 - Forbidden', status=403)
+            return render(request, 'store/error.html', {
+                'error_code': 404, 'error_message': 'Customer Not Found.'})
 
         if customer.organisation != product.organisation:
             if not request.user.is_admin or not request.user.is_staff:
-                print("Error - You do not have access to this Product.")
-                return HttpResponse('Error 403 - Forbidden', status=403)
+                return render(request, 'store/error.html', {'error_code': 403, 'error_message': 'Access Denied.'})
 
         context = {'product': product}
         return render(request, 'store/product.html', context)
@@ -113,14 +108,13 @@ def cart(request):
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            print("Error - Customer does not exist for this User Account.")
-            return HttpResponse('Error 403 - Forbidden', status=403)
+            return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
 
         order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
         items = order.orderitem_set.all()
         cart_items = order.get_cart_items
 
-        context = {'items': items, 'order': order, 'cart_items': cart_items}
+        context = {'items': items, 'order': order, 'cart_items': cart_items, 'title': 'My Shopping Cart'}
         return render(request, 'store/cart.html', context)
 
 
@@ -131,8 +125,7 @@ def checkout(request):
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            print("Error - Customer does not exist for this User Account.")
-            return HttpResponse('Error 403 - Forbidden', status=403)
+            return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
 
         order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
         items = order.orderitem_set.all()
