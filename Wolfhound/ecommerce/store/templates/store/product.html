@@ -1,0 +1,59 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="row my-5 justify-content-center">
+        <h1 style="letter-spacing: 2.5px;">Product Details</h1>
+    </div>
+</div>
+
+{% if product.availability == True %}
+<div class="row mx-5 px-5 py-4 box-element" >
+    <!-- image -->
+    <div class="col-md-6">
+        <img src="{{product.image_url}}" class="card-img-top" style="height:16rem">
+    </div>
+
+    <!-- name, size-quantity, price -->
+    <div class="col-md-6">        
+        <h2>{{product.name|title|truncatechars:25}}</h2>
+        <h5 class="text-muted">{{product.organisation|truncatechars:25}}</h5>
+        
+        <br>
+        <br>
+        <h4>SIZE OPTIONS</h4>
+        <div>
+            <table class="table table-borderless">
+                <thead>
+                  <tr class="col-sm-2">
+                    <th scope="col">S</th>
+                    <th scope="col">M</th>
+                    <th scope="col">L</th>
+                    <th scope="col">XL</th>
+                    <th scope="col">XXL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="col-sm-1">
+                    <td><input class="form-control" type="number" min=0 placeholder="0"></td>
+                    <td><input class="form-control" type="number" min=0 placeholder="0"></td>
+                    <td><input class="form-control" type="number" min=0 placeholder="0"></td>
+                    <td><input class="form-control" type="number" min=0 placeholder="0"></td>
+                    <td><input class="form-control" type="number" min=0 placeholder="0"></td>
+                  </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+
+    
+        <h4>PRICE</h4>
+        <div class="col pb-3">
+            <h4><strong>€{{product.price|floatformat:2}}</strong></h4>
+        </div>            
+        <a class="btn btn-outline-secondary rounded add-btn update-cart" href="{% url 'product' product.pk %}" role="button">ADD TO CART</a>
+    </div>
+</div>
+{% endif %}
+{% endblock content %}
