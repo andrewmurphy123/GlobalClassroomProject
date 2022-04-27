@@ -2,19 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d8fffddc-3157-4905-b484-46105fb05d0a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ecommerce/templates/base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ecommerce/templates/inc/_footer.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ecommerce/templates/inc/_nav.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ecommerce/ecommerce/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/ecommerce/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ecommerce/static/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/static/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ecommerce/store/templates/store/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/templates/store/cart.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ecommerce/store/templates/store/checkout.html" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/templates/store/checkout.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ecommerce/store/templates/store/error.html" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/templates/store/error.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ecommerce/store/templates/store/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/templates/store/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ecommerce/store/templates/store/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/templates/store/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ecommerce/store/templates/store/store.html" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/templates/store/store.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ecommerce/store/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

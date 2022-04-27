@@ -54,14 +54,6 @@ nav, footer {
 	width: 4rem;
 }
 
-.form-field{
-	width: 250px;
-	/*
-	display: inline-block;
-	padding: 5px;
-	*/
-}
-
 .cart-row{
 	display: flex;
     align-items: flex-stretch;
@@ -128,7 +120,7 @@ nav, footer {
   
   .notfound .notfound-404 {
 	position: relative;
-	height: 200px;
+	height: 350px;
 	margin: 0px auto 20px;
 	z-index: -1;
   }
@@ -169,18 +161,18 @@ nav, footer {
 	display: inline-block;
 	font-weight: 700;
 	text-decoration: none;
-	color: #fff;
+	background: #7CB06D;
+	color: #F6F4F2;
 	text-transform: uppercase;
 	padding: 13px 23px;
-	background: #ff6300;
 	font-size: 18px;
 	-webkit-transition: 0.2s all;
 	transition: 0.2s all;
   }
   
   .notfound a:hover {
-	color: #ff6300;
-	background: #211b19;
+	color: #F6F4F2;
+	background: #3F6844;
   }
   
   @media only screen and (max-width: 767px) {
