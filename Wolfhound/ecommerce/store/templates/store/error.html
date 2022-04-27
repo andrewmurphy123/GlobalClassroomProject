@@ -21,42 +21,19 @@
     
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="{% url 'store' %}">Wolfhound & Elk</a>
-    <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
-            data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'store' %}">Store<span class="sr-only">(current)</span></a>
-            </li>
-        </ul>
-
-        <div class="form-inline my-2 my-lg-0">
-            {% if user.is_authenticated %}
-            <a href="{% url 'logout' %}" class="btn btn-warning">Logout</a>
-            {% else %}
-            <a href="{% url 'login' %}" class="btn btn-warning">Login</a>
-            {% endif %}
-            <a href="{% url 'cart' %}">
-                <img id="cart-icon" src="{% static 'images/cart.png' %}">
-            </a>
-            <p id="cart-total">{{cart_items}}</p>
-        </div>
-
-    </div>
-</nav>
-
-
-<div class="container"> 
+<div class="container">
     {% if messages %}
         {% for message in messages %}
             {% if message.tags == 'error' %}
                 <div class="alert alert-danger" role="alert">{{ message }}</div>
-                <div id="notfound">
+            {% else %}
+                <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}
+                        <div id="notfound">
                     <div class="notfound">
                         <div class="notfound-404">
                             <h1>Oops!</h1>
@@ -65,14 +42,6 @@
                         <a href="https://wolfhoundandelk.com/">Go TO Homepage</a>
                     </div>
                 </div>
-            {% else %}
-                <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-
-    {% block content %}
-        CONTENT
     {% endblock %}
 </div>
 <script crossorigin="anonymous" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>

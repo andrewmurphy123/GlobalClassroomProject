@@ -3,7 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="d8fffddc-3157-4905-b484-46105fb05d0a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ecommerce/store/templates/store/checkout.html" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/templates/store/checkout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ecommerce/store/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ecommerce/store/templates/store/error.html" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/templates/store/error.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ecommerce/store/templates/store/store.html" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/templates/store/store.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ecommerce/store/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/ecommerce/store/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,10 +42,16 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/ecommerce/static/images" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/ecommerce/media/photos" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ecommerce/media/photos" />
+      <recent name="$PROJECT_DIR$/ecommerce/static/images" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ecommerce/media/photos" />
+      <recent name="$PROJECT_DIR$/ecommerce/media" />
       <recent name="$PROJECT_DIR$/ecommerce/static/images" />
     </key>
   </component>

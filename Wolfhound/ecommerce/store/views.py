@@ -1,4 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import JsonResponse, HttpResponse
 from django.db.models import F
 from django.contrib import messages
@@ -53,7 +53,9 @@ def user_logout(request):
 
 def store(request):
     if not request.user.is_authenticated:
-        return redirect('login')
+        #return redirect('login')
+        return render(request, 'store/error.html')
+        # raise PermissionDenied
     else:
         try:
             customer = request.user.customer

@@ -153,9 +153,9 @@ class Product(models.Model):
     @property
     def image_url(self):
         try:
-            url = self.image.url
+            url = self.image.url    # link to display the image from the database
         except:
-            url = ''
+            url = '/media/photos/placeholder.png'   # default placeholder if there is no image
         return url
 
     def __str__(self):
