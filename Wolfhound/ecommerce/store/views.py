@@ -201,9 +201,6 @@ def process_order(request):
             total = float(data['form']['total'])
             order.transaction_id = transaction_id
 
-            if total == order.get_cart_total:
-                order.order_status = 'awaiting_payment'
-
             order.shipping_address = ShippingAddress.objects.create(
                 address=data['shipping']['address'],
                 city=data['shipping']['city'],
@@ -217,6 +214,9 @@ def process_order(request):
                 county=data['billing']['county'],
                 eircode=data['billing']['eircode'],
             )
+
+            if total == order.get_cart_total:
+                order.order_status = 'awaiting_shipment'
 
             order.save()
         except ObjectDoesNotExist:
