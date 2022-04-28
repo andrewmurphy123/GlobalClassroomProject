@@ -16,3 +16,5 @@ If there are any changes to the Database (models.py):
 
 1. python manage.py makemigrations
 2. python manage.py migrate
+
+pip install send
