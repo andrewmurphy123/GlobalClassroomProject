@@ -137,6 +137,11 @@ EMAIL_HOST_USER = EmailField
 EMAIL_HOST_PASSWORD = CharField
 
 
+STRIPE_PUBLIC_KEY = "pk_test_51KoXLdCBXp6Rn5nrJH8F0gvjoYKWlwiOK3D95umof6FzksvebXEJbrcS6eWt2iJbrVZrUQGRg3TMeHKf80YO3tjL00iaj5fDPV"
+STRIPE_SECRET_KEY = "sk_test_51KoXLdCBXp6Rn5nrmW53Eb9rnHFmqGQFjYYRurZRNlP0723nwScN3uW6nGOUQS4wx35NFzwUbCF3hk6XHXU7l6YG0000wWGysb"
+
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 

@@ -1,0 +1,5 @@
+Django==4.0.4
+stripe==2.74.0
+Pillow==9.1.0
+django-modeladmin-reorder==3.5.0
+send==0.2.0

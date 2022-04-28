@@ -11,6 +11,9 @@ from django.template.loader import render_to_string
 import datetime
 import json
 
+import stripe
+from django.conf import settings
+
 from .models import *
 from .forms import UserRegisterForm, UserLoginForm
 
@@ -57,15 +60,12 @@ def user_logout(request):
 
 def store(request):
     if not request.user.is_authenticated:
-        # return redirect('login')
-        return render(request, 'store/error.html')
-        # raise PermissionDenied
+        return redirect('login')
     else:
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            print("Error - Customer does not exist for this User Account.")
-            return HttpResponse('Error 403 - Forbidden', status=403)
+            return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
 
         if customer.organisation is None and (not request.user.is_staff or not request.user.is_admin):
             return render(request, 'store/error.html', {'error_code': 403, 'error_message': 'Access Denied.'})
@@ -80,7 +80,7 @@ def store(request):
                 products = Product.objects.filter(organisation=customer.organisation)
 
             cart_items = order.get_cart_items
-            context = {'products': products, 'cart_items': cart_items}
+            context = {'products': products, 'cart_items': cart_items, 'title': 'Products'}
             return render(request, 'store/store.html', context)
 
 
@@ -91,19 +91,16 @@ def get_product(request, product_id):
         try:
             product = Product.objects.get(pk=product_id)
         except ObjectDoesNotExist:
-            print("Error - Page Not Found.")
-            return HttpResponse('Error 404 - Page Not Found', status=404)
+            return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Product Not Found.'})
 
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            print("Error - Customer does not exist for this User Account.")
-            return HttpResponse('Error 403 - Forbidden', status=403)
+            return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
 
         if customer.organisation != product.organisation:
             if not request.user.is_admin or not request.user.is_staff:
-                print("Error - You do not have access to this Product.")
-                return HttpResponse('Error 403 - Forbidden', status=403)
+                return render(request, 'store/error.html', {'error_code': 403, 'error_message': 'Access Denied.'})
 
         context = {'product': product}
         return render(request, 'store/product.html', context)
@@ -116,16 +113,14 @@ def cart(request):
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            print("Error - Customer does not exist for this User Account.")
-            return HttpResponse('Error 403 - Forbidden', status=403)
+            return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
 
         order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
         items = order.orderitem_set.all()
         cart_items = order.get_cart_items
 
-        context = {'items': items, 'order': order, 'cart_items': cart_items}
+        context = {'items': items, 'order': order, 'cart_items': cart_items, 'title': 'My Shopping Cart'}
         return render(request, 'store/cart.html', context)
-
 
 def checkout(request):
     if not request.user.is_authenticated:
@@ -134,12 +129,34 @@ def checkout(request):
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            print("Error - Customer does not exist for this User Account.")
-            return HttpResponse('Error 403 - Forbidden', status=403)
-
+            return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
         order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
         items = order.orderitem_set.all()
+        price = order.get_cart_total * 100
         cart_items = order.get_cart_items
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'eur',
+                    'product_data': {
+                        'name': 'Your Order',
+                    },
+                    'unit_amount_decimal': price,
+                },
+                'quantity': 1,
+            }],
+            mode = 'payment',
+            success_url = 'http://127.0.0.1:8000/',
+            cancel_url = 'http://127.0.0.1:8000/',
+        )
+        context={'items': items,
+                   'order': order,
+                   'cart_items': cart_items,
+                   'session_id': session.id,
+                   'stripe_public_key': settings.STRIPE_PUBLIC_KEY}
 
         context = {'items': items, 'order': order, 'cart_items': cart_items}
         return render(request, 'store/checkout.html', context)
@@ -206,6 +223,7 @@ def process_order(request):
         print('User Not Logged In')
 
     return JsonResponse('Payment Complete', safe=False)
+
 
 def order_confirmed(request):
     template = render_to_string('store/email.html', {'name': request.user.fullname})
