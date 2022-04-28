@@ -134,6 +134,10 @@ def checkout(request):
             
         order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
         items = order.orderitem_set.all()
+
+        if order.get_cart_total <= 0:
+            return redirect('store')
+
         price = order.get_cart_total * 100
         cart_items = order.get_cart_items
         stripe.api_key = settings.STRIPE_SECRET_KEY
