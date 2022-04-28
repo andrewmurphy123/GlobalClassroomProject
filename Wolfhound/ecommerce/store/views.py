@@ -67,9 +67,8 @@ def store(request):
             print("Error - Customer does not exist for this User Account.")
             return HttpResponse('Error 403 - Forbidden', status=403)
 
-        if customer.organisation is None:
-            print("Error - Customer has not been assigned an Organisation.")
-            return HttpResponse('Error 403 - Forbidden', status=403)
+        if customer.organisation is None and (not request.user.is_staff or not request.user.is_admin):
+            return render(request, 'store/error.html', {'error_code': 403, 'error_message': 'Access Denied.'})
         else:
             order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
 

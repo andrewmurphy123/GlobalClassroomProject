@@ -9,9 +9,11 @@
 {% endblock %}
 
 {% block content %}
+<div class="container box-element">
 <form method="POST" action="">
     {% csrf_token %}
     {{form.as_p}}
     <button type="submit" class="btn btn-primary btn-block">Login</button>
 </form>
+</div>
 {% endblock %}
