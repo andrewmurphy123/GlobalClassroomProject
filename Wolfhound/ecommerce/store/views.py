@@ -130,6 +130,7 @@ def checkout(request):
             customer = request.user.customer
         except ObjectDoesNotExist:
             return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
+            
         order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
         items = order.orderitem_set.all()
         price = order.get_cart_total * 100
