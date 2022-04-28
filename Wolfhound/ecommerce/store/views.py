@@ -122,6 +122,7 @@ def cart(request):
         context = {'items': items, 'order': order, 'cart_items': cart_items, 'title': 'My Shopping Cart'}
         return render(request, 'store/cart.html', context)
 
+
 def checkout(request):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -149,17 +150,17 @@ def checkout(request):
                 },
                 'quantity': 1,
             }],
-            mode = 'payment',
-            success_url = 'http://127.0.0.1:8000/',
-            cancel_url = 'http://127.0.0.1:8000/',
+            mode='payment',
+            success_url='http://127.0.0.1:8000/',
+            cancel_url='http://127.0.0.1:8000/',
         )
-        context={'items': items,
+
+        context = {'items': items,
                    'order': order,
                    'cart_items': cart_items,
                    'session_id': session.id,
                    'stripe_public_key': settings.STRIPE_PUBLIC_KEY}
 
-        context = {'items': items, 'order': order, 'cart_items': cart_items}
         return render(request, 'store/checkout.html', context)
 
 
