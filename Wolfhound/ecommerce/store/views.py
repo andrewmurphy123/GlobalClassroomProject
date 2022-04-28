@@ -1,9 +1,13 @@
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.forms import EmailField
 from django.http import JsonResponse, HttpResponse
 from django.db.models import F
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.template.loader import render_to_string
 import datetime
 import json
 
@@ -53,15 +57,19 @@ def user_logout(request):
 
 def store(request):
     if not request.user.is_authenticated:
-        return redirect('login')
+        # return redirect('login')
+        return render(request, 'store/error.html')
+        # raise PermissionDenied
     else:
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
+            print("Error - Customer does not exist for this User Account.")
+            return HttpResponse('Error 403 - Forbidden', status=403)
 
         if customer.organisation is None:
-            return render(request, 'store/error.html', {'error_code': 403, 'error_message': 'Access Denied.'})
+            print("Error - Customer has not been assigned an Organisation.")
+            return HttpResponse('Error 403 - Forbidden', status=403)
         else:
             order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
 
@@ -73,7 +81,7 @@ def store(request):
                 products = Product.objects.filter(organisation=customer.organisation)
 
             cart_items = order.get_cart_items
-            context = {'products': products, 'cart_items': cart_items, 'title': 'Products'}
+            context = {'products': products, 'cart_items': cart_items}
             return render(request, 'store/store.html', context)
 
 
@@ -84,18 +92,19 @@ def get_product(request, product_id):
         try:
             product = Product.objects.get(pk=product_id)
         except ObjectDoesNotExist:
-            return render(request, 'store/error.html', {
-                'error_code': 404, 'error_message': 'Product Not Found.'})
+            print("Error - Page Not Found.")
+            return HttpResponse('Error 404 - Page Not Found', status=404)
 
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            return render(request, 'store/error.html', {
-                'error_code': 404, 'error_message': 'Customer Not Found.'})
+            print("Error - Customer does not exist for this User Account.")
+            return HttpResponse('Error 403 - Forbidden', status=403)
 
         if customer.organisation != product.organisation:
             if not request.user.is_admin or not request.user.is_staff:
-                return render(request, 'store/error.html', {'error_code': 403, 'error_message': 'Access Denied.'})
+                print("Error - You do not have access to this Product.")
+                return HttpResponse('Error 403 - Forbidden', status=403)
 
         context = {'product': product}
         return render(request, 'store/product.html', context)
@@ -108,13 +117,14 @@ def cart(request):
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
+            print("Error - Customer does not exist for this User Account.")
+            return HttpResponse('Error 403 - Forbidden', status=403)
 
         order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
         items = order.orderitem_set.all()
         cart_items = order.get_cart_items
 
-        context = {'items': items, 'order': order, 'cart_items': cart_items, 'title': 'My Shopping Cart'}
+        context = {'items': items, 'order': order, 'cart_items': cart_items}
         return render(request, 'store/cart.html', context)
 
 
@@ -125,7 +135,8 @@ def checkout(request):
         try:
             customer = request.user.customer
         except ObjectDoesNotExist:
-            return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
+            print("Error - Customer does not exist for this User Account.")
+            return HttpResponse('Error 403 - Forbidden', status=403)
 
         order, created = Order.objects.get_or_create(customer=customer, order_status='pending')
         items = order.orderitem_set.all()
@@ -196,3 +207,18 @@ def process_order(request):
         print('User Not Logged In')
 
     return JsonResponse('Payment Complete', safe=False)
+
+def order_confirmed(request):
+    template = render_to_string('store/email.html', {'name': request.user.fullname})
+    
+    email = EmailMessage(
+        'Thank you for purchasing from Wolfhound & Elk',
+        template,
+        settings.EMAIL_HOST_USER,
+        [request.user.email],
+    )
+
+    email.fail_silently=False
+    email.send()
+
+    return JsonResponse('Order is placed', safe=False)
