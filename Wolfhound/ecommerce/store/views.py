@@ -60,7 +60,7 @@ def store(request):
         except ObjectDoesNotExist:
             return render(request, 'store/error.html', {'error_code': 404, 'error_message': 'Customer Not Found.'})
 
-        if customer.organisation is None:
+        if customer.organisation is None or not request.user.is_staff or not request.user.is_admin:
             return render(request, 'store/error.html', {'error_code': 403, 'error_message': 'Access Denied.'})
         else:
             order, created = Order.objects.get_or_create(customer=customer, order_status='pending')

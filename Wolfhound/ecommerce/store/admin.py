@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.utils.safestring import mark_safe
 
 from .forms import UserAdminCreationForm, UserAdminChangeForm
 from .models import *
@@ -44,8 +45,15 @@ class SizeAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     fields = ['name', 'price', 'organisation', 'description', 'sizes', 'availability', 'image']
     list_filter = ['organisation', 'availability']
-    list_display = ['name', 'price', 'organisation', 'availability', 'image']
+    list_display = ['name', 'price', 'organisation', 'availability', 'get_image']
     filter_horizontal = ('sizes',)
+
+    @admin.display(description='Image Preview')
+    def get_image(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" width="50">')
+        else:
+            return '–'
 
 
 @admin.register(Order)
