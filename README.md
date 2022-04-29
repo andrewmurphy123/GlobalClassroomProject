@@ -55,3 +55,31 @@ If you click on the name of a chosen product, you will be able to see and edit a
 
 ![image](https://user-images.githubusercontent.com/59791908/165892573-7c50dc98-a24c-4023-ab08-36841b8d343a.png)
 
+That was a short overview of the Admin Dashboard functionality. There are more features that you might be able to discover yourself.
+
+### E-Shop Experience
+
+To start with, http://localhost:8000/register or http://localhost:8000/login if you already have a customer account. For security purposes, new customers do not have access to any of the products in the E-Shop. Management has to assign an organisation to the customer account. Then customers have access only to the products that were made available for their organisation, but staff has full access.
+
+*Note: make sure that your user has a customer to be able to access E-Shop. You can create customers in Admin Dashboard.*
+
+<kbd><img src="https://user-images.githubusercontent.com/59791908/165897193-7567592f-a234-45bb-87df-0f8bc40b1a7e.png"></kbd>
+
+<kbd><img src="https://user-images.githubusercontent.com/59791908/165898070-adf30143-e8a5-4325-ac4b-9336c7159ea0.png"></kbd>
+
+<kbd><img src="https://user-images.githubusercontent.com/59791908/165898714-7d0f20b3-5bad-4366-8695-c59c0611f4dd.png"></kbd>
+
+*Note: size options do not work in this version, workaround if you want multiple items: click on the **Add to Cart** button a few more times.*
+
+<kbd><img src="https://user-images.githubusercontent.com/59791908/165899126-8ecf990a-7ea2-48cc-87db-d1c1fbeff5f2.png"></kbd>
+
+<kbd><img src="https://user-images.githubusercontent.com/59791908/165899250-072f123f-ff74-4f18-8ef4-6b982113a16c.png"></kbd>
+
+<kbd><img src="https://user-images.githubusercontent.com/59791908/165899366-f79c857f-8636-4a99-b3ef-c188934b84ff.png"></kbd>
+
+You can use a development card: 4242 4242 4242 4242, any CVC and date of expiry. In the development mode no real money is involved.
+
+When payment has been processed, shipping and billing addresses will be added to the database, as well as a unique transaction ID and the order status will automatically be updated to **Awaiting Shipment**. When you ship the order, you should update its status to **Shipped**.
+
+More Features: TBD.
+
