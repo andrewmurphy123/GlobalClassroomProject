@@ -37,18 +37,18 @@
                     <hr>
                     <div class="form-row">
                         <div class="col form-field">
-                            <input class="form-control" name="billing_address" placeholder="Address" type="text">
+                            <input class="form-control" name="billing_address" placeholder="Address" type="text" required>
                         </div>
                         <div class="col form-field">
-                            <input class="form-control" name="billing_city" placeholder="City" type="text">
+                            <input class="form-control" name="billing_city" placeholder="City" type="text" required>
                         </div>
                     </div>
                     <div class="form-row pt-2">
                         <div class="col form-field">
-                            <input class="form-control" name="billing_county" placeholder="County" type="text">
+                            <input class="form-control" name="billing_county" placeholder="County" type="text" required>
                         </div>
                         <div class="col form-field">
-                            <input class="form-control" name="billing_eircode" placeholder="Eircode" type="text">
+                            <input class="form-control" name="billing_eircode" placeholder="Eircode" type="text" required>
                         </div>
                     </div>
                 </div>
@@ -90,18 +90,12 @@
     form.addEventListener('submit', function(e) {
         e.preventDefault()
         submitFormData()
-        document.getElementById('form-button').classList.add('hidden')
-        document.getElementById('payment-info').classList.remove('hidden')
     })
 
     document.getElementById('make-payment').addEventListener('click', function(e) {
-        
+
         var stripe = Stripe('{{ stripe_public_key }}');
-        stripe.redirectToCheckout({
-            sessionId: '{{ session_id }}'
-        }).then(function (result){
-            
-        })
+        stripe.redirectToCheckout({sessionId: '{{ session_id }}'}).then(function (result){})
     })
 
     function submitFormData() {
